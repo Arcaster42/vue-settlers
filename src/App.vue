@@ -94,12 +94,27 @@ function handleClick() {
     const blueprint = blueprints.find(x => x.name === selectedBuilding.value)!
     buildings.push({ id: buildings.length, name: selectedBuilding.value, x: mouseX - (blueprint.size / 2), y: mouseY - (blueprint.size / 2), size: blueprint.size, color: blueprint.color })
     selectedBuilding.value = null
+    createRoads()
   }
   for (const button of buttons) {
     if (isClicked(button.x, button.y, button.w, button.h, mouseX, mouseY)) {
       selectedBuilding.value = button.label.toLowerCase()
     }
   }
+}
+
+function createRoads() {
+  const lastBuilding = buildings[buildings.length - 1]
+  if (lastBuilding.name !== 'warehouse') {
+    for (const warehouse of buildings.filter(x => x.name === 'warehouse')) {
+      roads.push({ id: roads.length, startId: lastBuilding.id, endId: warehouse.id, width: 10, color: '#808080' })
+    }
+  } else {
+    for (const building of buildings.filter(x => x.name !== 'warehouse')) {
+      roads.push({ id: roads.length, startId: lastBuilding.id, endId: building.id, width: 10, color: '#808080' })
+    }
+  }
+  roadPaths = setRoadPaths(roads, buildings)
 }
 
 function draw() {
