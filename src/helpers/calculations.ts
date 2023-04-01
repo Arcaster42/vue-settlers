@@ -1,23 +1,13 @@
 import { Building, Road, RoadPath } from "../types/types"
+import { TILE_SIZE } from "./constants"
 
-export function isOnRoad(roads: Road[], roadPaths: RoadPath[], tileSize: number, x: number, y: number) {
-  const halfRoadWidth = roads[0].width / 2
-  for (const roadPath of roadPaths) {
-    const isHorizontalRoad =
-      y + tileSize / 2 >= roadPath.y1 - halfRoadWidth &&
-      y + tileSize / 2 <= roadPath.y1 + halfRoadWidth
-    const isVerticalRoad =
-      x + tileSize / 2 >= roadPath.x2 - halfRoadWidth &&
-      x + tileSize / 2 <= roadPath.x2 + halfRoadWidth
-
-    if (
-      (x + tileSize / 2 >= roadPath.x1 &&
-        x + tileSize / 2 <= roadPath.x2 &&
-        isHorizontalRoad) ||
-      (y + tileSize / 2 >= roadPath.y1 &&
-        y + tileSize / 2 <= roadPath.y2 &&
-        isVerticalRoad)
-    ) {
+export function isOnRoad(buildings: Building[], tileSize: number, x: number, y: number) {
+  for (const building of buildings) {
+    if (building.name === 'road' &&
+      x >= building.x &&
+      x <= building.x + building.size &&
+      y >= building.y &&
+      y <= building.y + building.size) {
       return true
     }
   }
@@ -43,4 +33,8 @@ export function setRoadPaths(roads: Road[], buildings: Building[]) {
     }
   }
   return roadPaths
+}
+
+export function snapToGrid(value: number): number {
+  return Math.round(value / TILE_SIZE) * TILE_SIZE;
 }
